@@ -1,0 +1,133 @@
+---
+title: "Project 1"
+author: "Name: Skryabin Nikolay \n Partner: Daniel Brock"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 3
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage{threeparttablex}
+  - \usepackage[normalem]{ulem}
+  - \usepackage{makecell}
+  - \usepackage{xcolor}
+---
+```{r setup, include = FALSE}
+
+#### Load necessary packages ####
+# * These packages are not necessary to complete the assignment and or only used 
+#   to provide an example. 
+packages <- c("knitr", "kableExtra", "magrittr", "readr", "geosphere")
+
+install_me <- packages[!(packages %in% installed.packages()[, "Package"])]
+if (length(install_me)) install.packages(install_me)
+
+library(knitr)
+library(kableExtra)
+library(magrittr)
+library(readr)
+library(geosphere)
+```
+
+## Background
+The World Health Organization has recently employed a new data science initiative, *CSIT-165*, that uses data science to characterize pandemic diseases. 
+*CSIT-165* disseminates data driven analyses to global decision makers.
+
+*CSIT-165* is a conglomerate comprised of two fabricated entities: *Global Health Union (GHU)* and *Private Diagnostic Laboratories (PDL)*. 
+Your and your partner's role is to play a data scientist from one of these two entities.
+
+## Data
+> [2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository by John Hopkins CSSE](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series)
+
+Data for 2019 Novel Coronavirus is operated by the John Hopkins University Center for Systems Science and Engineering (JHU CSSE).
+Data includes daily time series CSV summary tables, including confirmations, recoveries, and deaths. 
+Country/region are countries/regions hat conform to World Health Organization (WHO).
+Lat and Long refer to coordinates references for the user. 
+Date fields are stored in MM/DD/YYYY format.
+
+```{r}
+# The URLs of the data files
+URL_CONFIRMED <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
+
+URL_DEATHS <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
+
+# Loads a file from URL and reads data from the file into data frame
+getDataFrame <- function(url){
+  
+  url_list<-strsplit(url,split = "/") # split the URL into list using "/" as delimiter
+  
+  file_name <- sapply(url_list, tail, 1) # get the file name 
+
+  download.file(url, file_name) # download the file
+
+  data_frame <- read.csv(file_name, stringsAsFactors = FALSE) # create data frame from the file
+
+  data_frame # return it
+}
+
+# Get the data frames for deaths and confirmed cases
+confirmed_df <- getDataFrame(URL_CONFIRMED)
+deaths_df <- getDataFrame(URL_DEATHS)
+
+```
+
+## Project Objectives
+
+### Objective 1
+```{r ob1}
+# Get max value of deaths on the first day
+max.deaths.first.day.origin <- deaths_df[deaths_df[,5] == max(deaths_df[,5]), 1:2]
+
+# Get max value of confirmed cases on the first day
+max.confirmed.first.day.origin <- confirmed_df[confirmed_df[,5] == max(confirmed_df[,5]), 1:2]
+
+# Check if the province and state for max values of the first day are the same
+if(max.confirmed.first.day.origin[1,1] == max.deaths.first.day.origin[1,1] &&
+   max.confirmed.first.day.origin[1,2] == max.deaths.first.day.origin[1,2])
+{
+  cat(paste0("The origin of Covid 19 is: ", max.deaths.first.day.origin[1,1],
+             ", ",max.deaths.first.day.origin[1,2] ))
+} else 
+{
+  print("Couldn't find the origin")
+}
+
+```
+
+### Objective 2
+```{r ob2}
+
+```
+
+### Objective 3
+```{r ob3}
+
+```
+
+### Objective 4
+
+#### Objective 4.1
+```{r ob4.1}
+
+```
+
+#### Objective 4.2
+```{r ob4.2}
+
+```
+
+### GitHub Log
+```{bash gitlog} 
+git log --pretty=format:"%nSubject: %s%nAuthor: %aN%nDate: %aD%nBody: %b"
+```
+
