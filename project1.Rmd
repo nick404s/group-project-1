@@ -106,11 +106,72 @@ if(max.confirmed.first.day.origin[1,1] == max.deaths.first.day.origin[1,1] &&
 
 ### Objective 2
 ```{r ob2}
+# Create reversed data frame and exclude first 4 columns 
+rev.confirmed_df <- rev(confirmed_df[,5:ncol(confirmed_df)])
+# Assign NAs to 0s in the data frame
+rev.confirmed_df[is.na(rev.confirmed_df)] <- 0
+# create a base data frame with 4 first columns to hold result
+res_df2 <- data.frame(confirmed_df[ ,1:4],stringsAsFactors = FALSE)
+
+# a function to find last recent and previous columns
+getRecentColumns <- function(df,df1)
+{
+  for(i in 1:(ncol(df)-1)) # loop columns
+  {
+    for(j in 1:nrow(df))  # loop rows
+    {
+      # check the current and next value in the row, column. 
+      # and check for NAs in latitude and longitude
+      if((df[j,i + 1] == 0 && df[j,i] > 0) && !is.na(df1[j,3:4])){
+        # append to the base data frame
+        df1[,5:6] <- cbind(df[(i+1)],df[i])
+        # return the data frame
+        return(df1)
+      }
+    }
+  }
+}
+# get result data frame 
+res_df2 <- getRecentColumns(rev.confirmed_df, res_df2) 
+# get the last recent confirmed cases data frame
+last_recent_confirmed_df <- res_df2[res_df2[,5]==0 & res_df2[,6]>0,]
 
 ```
 
 ### Objective 3
 ```{r ob3}
+# Get the library
+library(geosphere)
+
+# Gets distance from origin in miles
+getDistanceInMiles <- function(coordinate1, coordinate2)
+{
+  # call the distm function to calculate a distance in meters
+  distance <- distm(coordinate1,
+                    coordinate2,
+                    fun=distVincentyEllipsoid)
+  # Coefficient to convert meters to miles
+  COEFFICIENT <- 0.000621371
+  # Calculate miles
+  miles_dist <- distance[1,1] * COEFICIENT
+  # return miles
+  miles_dist
+}
+
+# Prints a distance between the origin and last confirmed cases
+printDistance <- function(origin_df, place_df) {
+  
+  for (i in 1:nrow(place_df)) 
+  {
+    print(paste0(i, ". ", place_df[i,1],", ",place_df[i,2], " is ", 
+               round(getDistanceInMiles(origin_df[,c('Long','Lat')],
+               place_df[i,c('Long','Lat')]), 2), " miles away from ",
+               origin_df[1,1],", ",
+               origin_df[1,2],"\n"))
+  }
+}
+
+printDistance(max.deaths.first.day.origin, last_recent_confirmed_df)
 
 ```
 
