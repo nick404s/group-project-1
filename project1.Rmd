@@ -122,9 +122,10 @@ getRecentColumns <- function(df,df1)
   {
     current <- df[,i] # current column
     next1 <- df[,(i + 1)] # next column
+    country_names <- om_confirmed_df$Country.Region # Country.Region column
     
-    # check the condition and return the columns
-    ifelse(next1 == 0 & current > 0,
+    # check the conditions and return the columns
+    ifelse(next1 == 0 & current > 0 & !grepl("Olympics",country_names) & !grepl("Antarctica",country_names),
            return(cbind(df[(i+1)],df[i])), next)
   }
 }
