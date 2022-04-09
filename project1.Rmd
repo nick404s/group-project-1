@@ -156,20 +156,37 @@ getDistanceInMiles <- function(coordinate1, coordinate2)
   miles_dist
 }
 
-# Prints a distance between the origin and last confirmed cases
-printDistance <- function(origin_df, place_df) {
-  # c('Long', 'Lat')
+# Sorts the recent confirmed countries by distance from origin
+sortCountriesByDistance <- function(origin_df, place_df)
+{
+  miles_dist <- data.frame(place_df[,1:2], stringsAsFactors = FALSE) # a data frame to hold distance
+  
   for (i in 1:nrow(place_df)) 
   {
-    print(paste0(i, ". ", place_df[i,1],", ",place_df[i,2], " is ", 
-               round(getDistanceInMiles(origin_df[,c('Long', 'Lat')],
-               place_df[i,c('Long', 'Lat')]), 2), " miles away from ",
-               origin_df[1,1],", ",
+    # append a distance to the data frame
+    miles_dist[,3] <- cbind(round(getDistanceInMiles(origin_df[,c('Long', 'Lat')], 
+                                                     place_df[i,c('Long', 'Lat')]), 2))
+  }
+  colnames(miles_dist)[3] <- "Distance"   # name the last column
+  miles_dist[order(miles_dist$Distance),]  # return the sorted by distance data frame
+}
+
+
+# Prints a distance between the origin and last confirmed cases
+printDistance <- function(origin_df, place_df) 
+{
+  for (i in 1:nrow(place_df)) 
+  {
+    cat(paste0(i, ". ", place_df[i,1]," ",place_df[i,2], " is ",
+               place_df[i,3], " miles away from ",
+               origin_df[1,1]," ",
                origin_df[1,2]))
   }
 }
 
-printDistance(max.deaths.first.day.origin, last_recent_confirmed_df)
+sorted_countries <- sortCountriesByDistance(max.deaths.first.day.origin, last_recent_confirmed_df)
+
+printDistance(max.deaths.first.day.origin, sorted_countries)
 
 ```
 
