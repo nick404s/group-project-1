@@ -86,10 +86,10 @@ deaths_df <- getDataFrame(URL_DEATHS)
 ### Objective 1
 ```{r ob1}
 # Get max value of deaths on the first day
-max.deaths.first.day.origin <- deaths_df[deaths_df[,5] == max(deaths_df[,5]), 1:2]
+max.deaths.first.day.origin <- deaths_df[deaths_df[,5] == max(deaths_df[,5]), 1:4]
 
 # Get max value of confirmed cases on the first day
-max.confirmed.first.day.origin <- confirmed_df[confirmed_df[,5] == max(confirmed_df[,5]), 1:2]
+max.confirmed.first.day.origin <- confirmed_df[confirmed_df[,5] == max(confirmed_df[,5]), 1:4]
 
 # Check if the province and state for max values of the first day are the same
 if(max.confirmed.first.day.origin[1,1] == max.deaths.first.day.origin[1,1] &&
@@ -151,21 +151,21 @@ getDistanceInMiles <- function(coordinate1, coordinate2)
   # Coefficient to convert meters to miles
   COEFFICIENT <- 0.000621371
   # Calculate miles
-  miles_dist <- distance[1,1] * COEFICIENT
+  miles_dist <- distance[1,1] * COEFFICIENT
   # return miles
   miles_dist
 }
 
 # Prints a distance between the origin and last confirmed cases
 printDistance <- function(origin_df, place_df) {
-  
+  # c('Long', 'Lat')
   for (i in 1:nrow(place_df)) 
   {
     print(paste0(i, ". ", place_df[i,1],", ",place_df[i,2], " is ", 
-               round(getDistanceInMiles(origin_df[,c('Long','Lat')],
-               place_df[i,c('Long','Lat')]), 2), " miles away from ",
+               round(getDistanceInMiles(origin_df[,c('Long', 'Lat')],
+               place_df[i,c('Long', 'Lat')]), 2), " miles away from ",
                origin_df[1,1],", ",
-               origin_df[1,2],"\n"))
+               origin_df[1,2]))
   }
 }
 
