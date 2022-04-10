@@ -86,10 +86,12 @@ deaths_df <- getDataFrame(URL_DEATHS)
 ### Objective 1
 ```{r ob1}
 # Get max value of deaths on the first day
-max.deaths.first.day.origin <- deaths_df[deaths_df[,5] == max(deaths_df[,5]), 1:4]
+max.deaths.first.day.origin <- deaths_df[deaths_df[,5] == 
+                                           max(deaths_df[,5]), 1:4]
 
 # Get max value of confirmed cases on the first day
-max.confirmed.first.day.origin <- confirmed_df[confirmed_df[,5] == max(confirmed_df[,5]), 1:4]
+max.confirmed.first.day.origin <- confirmed_df[confirmed_df[,5] ==
+                                                 max(confirmed_df[,5]), 1:4]
 
 # Check if the province and state for max values of the first day are the same
 if(max.confirmed.first.day.origin[1,1] == max.deaths.first.day.origin[1,1] &&
@@ -124,8 +126,10 @@ getRecentColumns <- function(df,df1)
     next1 <- df[,(i + 1)] # next column
     country_names <- om_confirmed_df$Country.Region # Country.Region column
     
-    # check the conditions and return the columns. Exclude the Olympics and Antarctica from the search
-    ifelse(next1 == 0 & current > 0 & !grepl("Olympics",country_names) & !grepl("Antarctica",country_names),
+    # check the conditions and return the columns. 
+    # Exclude the Olympics and Antarctica from the search
+    ifelse(next1 == 0 & current > 0 & !grepl("Olympics",country_names) &
+             !grepl("Antarctica",country_names),
            return(cbind(df[(i+1)],df[i])), next)
   }
 }
@@ -159,16 +163,19 @@ getDistanceInMiles <- function(coordinate1, coordinate2)
 # Sorts the recent confirmed countries by distance from origin
 sortCountriesByDistance <- function(origin_df, place_df)
 {
-  miles_dist <- data.frame(place_df[,1:2], stringsAsFactors = FALSE) # a data frame to hold distance
+   # a data frame to hold distance
+  miles_dist <- data.frame(place_df[,1:2], stringsAsFactors = FALSE)
   
   for (i in 1:nrow(place_df)) 
   {
     # append a distance to the data frame
-    miles_dist[,3] <- cbind(round(getDistanceInMiles(origin_df[,c('Long', 'Lat')], 
-                                                     place_df[i,c('Long', 'Lat')]), 2))
+    miles_dist[,3] <- 
+      cbind(round(getDistanceInMiles(origin_df[,c('Long', 'Lat')], 
+                                    place_df[i,c('Long', 'Lat')]), 2))
   }
   colnames(miles_dist)[3] <- "Distance"   # name the last column
-  miles_dist[order(miles_dist$Distance),]  # return the sorted by distance data frame
+   # return the sorted by distance data frame
+  miles_dist[order(miles_dist$Distance),] 
 }
 
 
@@ -184,7 +191,8 @@ printDistance <- function(origin_df, place_df)
   }
 }
 # get the sorted recent confirmed countries
-sorted_countries <- sortCountriesByDistance(max.deaths.first.day.origin, last_recent_confirmed_df)
+sorted_countries <- sortCountriesByDistance(max.deaths.first.day.origin,
+                                            last_recent_confirmed_df)
 # Print the result
 printDistance(max.deaths.first.day.origin, sorted_countries)
 
@@ -197,14 +205,19 @@ printDistance(max.deaths.first.day.origin, sorted_countries)
 # Omit entries with 0 or NAs for coordinates in deaths data frame
 om_deaths_df <- na.omit(deaths_df[deaths_df[,3:4]!=0,])
 
-# Calculate the risk scores for each place using the last columns from the deaths and confirmed data frames
-risk_score <- 100 * (om_deaths_df[,ncol(om_deaths_df)] / om_confirmed_df[,ncol(om_confirmed_df)])
+# Calculate the risk scores for each place using the last columns 
+# from the deaths and confirmed data frames
+risk_score <- 100 * (om_deaths_df[,ncol(om_deaths_df)] / 
+                       om_confirmed_df[,ncol(om_confirmed_df)])
 
 # Calculate the global risk score
-global_risk_score <- 100 * (sum(om_deaths_df[,ncol(om_deaths_df)]) / sum(om_confirmed_df[,ncol(om_confirmed_df)]))
+global_risk_score <- 100 * (sum(om_deaths_df[,ncol(om_deaths_df)]) / 
+                           sum(om_confirmed_df[,ncol(om_confirmed_df)]))
 
-# Create a data frame to hold data with the confirmed and deaths last day, and risk score 
-risk_df <- cbind(om_confirmed_df[,c(1,2,ncol(om_confirmed_df))], om_deaths_df[,ncol(om_deaths_df)], risk_score)
+# Create a data frame to hold data with the confirmed and
+# deaths last day, and risk score 
+risk_df <- cbind(om_confirmed_df[,c(1,2,ncol(om_confirmed_df))], 
+                 om_deaths_df[,ncol(om_deaths_df)], risk_score)
 
 # Rename columns
 colnames(risk_df)[3:4] <- c("Confirmed", "Deaths")
@@ -213,19 +226,21 @@ colnames(risk_df)[3:4] <- c("Confirmed", "Deaths")
 om_risk_df <- risk_df[risk_df$Confirmed != 0,]
 
 # Sort by risk score in ascending and Confirmed in descending order
-sorted_by_risk_ascend <- om_risk_df[order(om_risk_df$risk_score, rev(om_risk_df$Confirmed)),]
+sorted_by_risk_ascend <- om_risk_df[order(om_risk_df$risk_score, -om_risk_df$Confirmed),]
 
 # The first place in the data frame has the lowest risk
 lowest_risk_place <- sorted_by_risk_ascend[1,]
 
 cat(paste("The place with the lowest risk is:", lowest_risk_place[1,1], 
-          lowest_risk_place[1,2],", the risk is:", round(lowest_risk_place[1,5],2)), sep="\n")                                                                            
+          lowest_risk_place[1,2],", the risk score is:", 
+          round(lowest_risk_place[1,5],2)), sep="\n")                                                                            
 
 # The last place in the data frame has the highest risk score
 highest_risk_place <- sorted_by_risk_ascend[nrow(sorted_by_risk_ascend),]
 
 cat(paste("The place with the highest risk score is:", highest_risk_place[1,1], 
-          highest_risk_place[1,2],", the risk score is:", round(highest_risk_place[1,5],2)), sep="\n")
+          highest_risk_place[1,2],", the risk score is:", 
+          round(highest_risk_place[1,5],2)), sep="\n")
 
 cat(paste("The global risk score is:", round(global_risk_score,2)), sep="\n")
 
@@ -233,30 +248,32 @@ cat(paste("The global risk score is:", round(global_risk_score,2)), sep="\n")
 
 ### Objective 5
 ```{r ob5}
-# Get the country name and last day of confirmed cases data frame
-last_day_confirmed <- om_confirmed_df[,c(2,ncol(om_confirmed_df))]
-# Get the country name and last day of deaths cases 
-last_day_deaths <- om_deaths_df[,ncol(om_deaths_df)]
-# Bind them together
-countries_confirmed_deaths <- cbind(last_day_confirmed,last_day_deaths)
+# Gets the top 5 countries with the most cases
+getTop5Countries <- function(df)
+{
+  # Get the country name and last day of the last cases data frame
+  last_day_cases <- df[,c(2,ncol(df))]
+  
+  # Get the sum of the last day cases for each country
+  countries_sums <- setNames(aggregate(last_day_cases[,2] ~ last_day_cases[,1],
+  last_day_cases, FUN=sum),c("Province.State", "Sum"))
+  
+  # get 5 countries with the most cases
+  top_5_countries <- (tail(countries_sums[order(countries_sums$Sum),], 5))
+  
+  # reverse the rows 
+  top_5_countries <- apply(top_5_countries, 2, rev)
+  
+  # return it
+  top_5_countries
+}
 
-# Use aggregate function to sum up number of confirmed and deaths cases for each country
-countries_sums <- setNames(aggregate(cbind(countries_confirmed_deaths[,2],countries_confirmed_deaths[,3]) ~ countries_confirmed_deaths$Country.Region, data=countries_confirmed_deaths, FUN=sum),c("Province.State", "Sum.Confirmed", "Sum.Deaths"))
+# Get the top 5 countries with confirmed cases
+top_5_countries_confirmed <- getTop5Countries(om_confirmed_df)
 
-# Calculate the total sum of confirmed and death cases for each country
-total_sum <- countries_sums[,2] + countries_sums[,3]
+# Get the top 5 countries with death cases
+top_5_countries_deaths <- getTop5Countries(om_deaths_df)
 
-# Append it to the country sums data frame
-countries_sums[,4] <- cbind(total_sum)
-
-# Rename a column
-colnames(countries_sums)[4] <- "Total.Sum"
-
-# get 5 countries with most confirmed and deaths cases
-top_5_countries <- (tail(countries_sums[order(countries_sums$Total.Sum),], 5))
-
-# reverse rows so the most confirmed and deaths cases were on top
-top_5_countries <- apply(top_5_countries, 2, rev)
 
 ```
 
