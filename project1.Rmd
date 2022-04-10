@@ -142,7 +142,7 @@ res_df2[,5:6] <- cbind(getRecentColumns(rev.confirmed_df, res_df2))
 # get the last recent confirmed cases data frame
 last_recent_confirmed_df <- res_df2[res_df2[,5]==0 & res_df2[,6]>0,]
 
-cat(paste0("The most recent area to have a confirmed case is ", last_recent_confirmed_df[1,2]))
+cat(paste0("The most recent area to have a confirmed case is ", last_recent_confirmed_df[1,2], "."))
 
 ```
 
@@ -192,8 +192,8 @@ printDistance <- function(origin_df, place_df)
   {
     cat(paste0(i, ". ", place_df[i,1]," ",place_df[i,2], " is ",
                place_df[i,3], " miles away from ",
-               origin_df[1,1]," ",
-               origin_df[1,2]))
+               origin_df[1,1],", ",
+               origin_df[1,2],"."))
   }
 }
 # get the sorted recent confirmed countries
@@ -251,7 +251,19 @@ cat(paste("The place with the highest risk score is:", highest_risk_place[1,1],
 cat(paste("The global risk score is:", round(global_risk_score,2)), sep="\n")
 
 ```
-By seeing the drastic dispersion between the countries with the lowest and highest risk scores (0 and 18.7 respectively), it's apparent that most countries have relatively low risk scores, but some outlier countries have extremely high risk scores, pulling the global risk score up.
+By seeing the drastic dispersion between the areas with the lowest and highest risk scores (0 and 18.7 respectively), it's apparent that most areas have relatively low risk scores, but some outlier areas have extremely high risk scores that are pulling the 'global risk score' up. 
+
+It's incredibly important to have succinct, yet descriptive values denoted to the various areas of the world in order to allow smarter and more informed decision making. With the knowledge of the risk for each area, it will heavily impact the amount of effort and money allocated to such areas in the effort to minimize sickness, deaths, and overall monetary costs. 
+
+One limitation with the 'risk score' used above is in how the value is calculated. By creating a percentage in terms of deaths per confirmed cases, it's telling us what areas individuals are most likely to die if they contract Covid-19, but it does leave a lot to be desired for a well encompassed single number to illustrate the 'risk' of the country or province. For example, if area A has a population of 1,000,000 people, and 3 individuals catch Covid-19, if all 3 die to it, they would have a 'risk score' of 100. While on the hand, area B, with a population of 1,000,000 could have 1,000,000 cases, with 500,000 deaths, giving them a 'risk score' of 50. Which area would you rather live in? The area where 3 people out of 1,000,000 caught and died from Covid-19, or the area where every individual (all 1,000,000) caught Covid-19, but only half (a staggering 500,000) died. Based on the 'risk score' metric, area B is twice as safe as area A, showing a massive weakness and abuse point of the 'risk score' metric.
+
+Another limitation with the 'risk score' equation is the reliance on self-reported data. Each area is responsible for taking a reliable count of the number of cases of Covid-19, as well as the number of deaths caused by the disease. False positives or false negatives in either regard of Covid-19 cases and deaths, as well as the intentional falsification of values will result in incredibly inaccurate 'risk score' values, making the worth of the metric overall worse. 
+
+With enough poor data entered into the 'risk score' metric, it's value depreciates rapidly, until it becomes almost worthless when comparing areas to each other. If one area has been diligent in their proper diagnosing and reporting of cases and deaths while another area has not, comparisons between the two areas, like in the metric 'global risk score', are not valid or reliable. 
+
+Unless every area is doing an equally good job of diagnosing and reporting their Covid-19 cases and deaths, the metric will be wildly inaccurate and unfortunately, punish the individual areas that are honest and doing their due diligence, by having it appear that they are suffering worse from Covid-19 when compared to areas that are either ignorant of their true values, or intentionally dishonest about them.
+
+
 
 ### Objective 5
 ```{r ob5}
