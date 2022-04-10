@@ -2,25 +2,29 @@
 title: "Project 1"
 author: "Name: Skryabin Nikolay \n Partner: Daniel Brock"
 date: "`r Sys.Date()`"
-output: 
+output:
+  html_document:
+    toc: yes
+    toc_depth: '3'
+    df_print: paged
   pdf_document:
-    toc: true
+    toc: yes
     toc_depth: 3
 header-includes:
-  - \usepackage{booktabs}
-  - \usepackage{longtable}
-  - \usepackage{array}
-  - \usepackage{multirow}
-  - \usepackage{wrapfig}
-  - \usepackage{float}
-  - \usepackage{colortbl}
-  - \usepackage{pdflscape}
-  - \usepackage{tabu}
-  - \usepackage{threeparttable}
-  - \usepackage{threeparttablex}
-  - \usepackage[normalem]{ulem}
-  - \usepackage{makecell}
-  - \usepackage{xcolor}
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+- \usepackage{threeparttablex}
+- \usepackage[normalem]{ulem}
+- \usepackage{makecell}
+- \usepackage{xcolor}
 ---
 ```{r setup, include = FALSE}
 
@@ -138,6 +142,8 @@ res_df2[,5:6] <- cbind(getRecentColumns(rev.confirmed_df, res_df2))
 # get the last recent confirmed cases data frame
 last_recent_confirmed_df <- res_df2[res_df2[,5]==0 & res_df2[,6]>0,]
 
+cat(paste0("The most recent area to have a confirmed case is ", last_recent_confirmed_df[1,2]))
+
 ```
 
 ### Objective 3
@@ -232,19 +238,20 @@ sorted_by_risk_ascend <- om_risk_df[order(om_risk_df$risk_score, -om_risk_df$Con
 lowest_risk_place <- sorted_by_risk_ascend[1,]
 
 cat(paste("The place with the lowest risk is:", lowest_risk_place[1,1], 
-          lowest_risk_place[1,2],", the risk score is:", 
+          lowest_risk_place[1,2],", with a risk score of:", 
           round(lowest_risk_place[1,5],2)), sep="\n")                                                                            
 
 # The last place in the data frame has the highest risk score
 highest_risk_place <- sorted_by_risk_ascend[nrow(sorted_by_risk_ascend),]
 
 cat(paste("The place with the highest risk score is:", highest_risk_place[1,1], 
-          highest_risk_place[1,2],", the risk score is:", 
+          highest_risk_place[1,2],", with a risk score of:", 
           round(highest_risk_place[1,5],2)), sep="\n")
 
 cat(paste("The global risk score is:", round(global_risk_score,2)), sep="\n")
 
 ```
+By seeing the drastic dispersion between the countries with the lowest and highest risk scores (0 and 18.7 respectively), it's apparent that most countries have relatively low risk scores, but some outlier countries have extremely high risk scores, pulling the global risk score up.
 
 ### Objective 5
 ```{r ob5}
@@ -274,6 +281,13 @@ top_5_countries_confirmed <- getTop5Countries(om_confirmed_df)
 # Get the top 5 countries with death cases
 top_5_countries_deaths <- getTop5Countries(om_deaths_df)
 
+kable(top_5_countries_confirmed, "pipe",
+      col.names = c("Country Name", "Sum"), 
+      align = "lr", caption = "The Top 5 Countries with Confirmed Cases")
+
+kable(top_5_countries_deaths, "pipe", 
+      col.names = c("Country Name", "Sum"), 
+      align = "lr", caption = "The Top 5 Countries with Death Cases")
 
 ```
 
