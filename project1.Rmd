@@ -56,14 +56,19 @@ Lat and Long refer to coordinates references for the user.
 Date fields are stored in MM/DD/YYYY format.
 
 #### GitHub Repository of the Project
-> [group-project-1](https://github.com/nick404s/group-project-1/tree/main)
+> [group-project-1](https://github.com/nick404s/group-project-1)
 
 
 ```{r}
-# The URLs of the data files
-URL_CONFIRMED <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
+# URLs for the confirmed and death cases files 
+URL_CONFIRMED <- paste0("https://raw.githubusercontent.com/CSSEGISandData/",
+                "COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/",
+                "time_series_covid19_confirmed_global.csv")
 
-URL_DEATHS <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
+
+URL_DEATHS <- paste0("https://raw.githubusercontent.com/CSSEGISandData/",
+                "COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/",
+                "time_series_covid19_deaths_global.csv")
 
 # Loads a file from URL and reads data from the file into data frame
 getDataFrame <- function(url)
@@ -241,18 +246,17 @@ sorted_by_risk_ascend <-
 # The first place in the data frame has the lowest risk
 lowest_risk_place <- sorted_by_risk_ascend[1,]
 
-cat(paste("The place with the lowest risk is:", lowest_risk_place[1,1], 
-          lowest_risk_place[1,2],", with a risk score of:", 
-          round(lowest_risk_place[1,5],2)), sep="\n")                                                                            
-
 # The last place in the data frame has the highest risk score
 highest_risk_place <- sorted_by_risk_ascend[nrow(sorted_by_risk_ascend),]
 
-cat(paste("The place with the highest risk score is:", highest_risk_place[1,1], 
-          highest_risk_place[1,2],", with a risk score of:", 
+cat(paste0("The place with the lowest risk is: ", lowest_risk_place[1,1]," ", 
+          lowest_risk_place[1,2],", with a risk score of: ", 
+          round(lowest_risk_place[1,5],2)), sep="\n")                                                                            
+cat(paste0("The place with the highest risk score is: ", highest_risk_place[1,1], 
+          highest_risk_place[1,2],", with a risk score of: ", 
           round(highest_risk_place[1,5],2)), sep="\n")
 
-cat(paste("The global risk score is:", round(global_risk_score,2)), sep="\n")
+cat(paste0("The global risk score is: ", round(global_risk_score,2)), sep="\n")
 
 ```
 By seeing the drastic dispersion between the areas with the lowest and highest risk scores (0 and 18.7 respectively), it's apparent that most areas have relatively low risk scores, but some outlier areas have extremely high risk scores that are pulling the 'global risk score' up. 
