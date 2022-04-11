@@ -55,6 +55,10 @@ Country/region are countries/regions hat conform to World Health Organization (W
 Lat and Long refer to coordinates references for the user. 
 Date fields are stored in MM/DD/YYYY format.
 
+#### GitHub Repository of the Project
+> [group-project-1](https://github.com/nick404s/group-project-1/tree/main)
+
+
 ```{r}
 # The URLs of the data files
 URL_CONFIRMED <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
